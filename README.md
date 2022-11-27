@@ -1,8 +1,8 @@
 - 👋 Hi, I’m @sodeidelphonse
 - 👀 I’m biostatistician with interests in environments and health-related data modeling. 
 I am passionnate about spatio-temporal modeling,GIS and remote sensing 
-- 🌱 I’m currently learning data management and analytics tools including Power BI, Google Data Studio and SQL.
-- 💞️ I’m looking to collaborate on data-driven projects which require the use of R or Python langages.
+- 🌱 I’m currently learning data management and analytics tools including CommCare, REDCap, Power BI and SQL.
+- 💞️ I’m looking to collaborate on data-driven projects which require the use of R or Python languages.
 - 📫 You Can reach out to me on sdidelphonse@gmail.com
 
 <!---
