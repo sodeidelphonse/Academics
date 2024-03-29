@@ -1,3 +1,4 @@
+# About me
 👋 Hi, I’m @sodeidelphonse
 👀 I’m biostatistician with interests in environmental and health-related data modeling. 
 I am passionnate about machine learning, spatio-temporal modeling, GIS and remote sensing techniques to support evidence-based decision-making. 
