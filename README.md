@@ -4,7 +4,7 @@
 👀 I’m biostatistician with interests in environmental and health-related data modeling. 
 I am passionnate about machine learning, spatio-temporal modeling, GIS and remote sensing techniques to support evidence-based decision-making. 
 
-💞️ I’m proficient in data management and analytics tools including CommCare, REDCap, Power BI and SQL and looking to collaborate on data-driven projects which require the use of R, Python and/or SQL languages.
+💞️ I’m proficient in data management and analytics tools including CommCare, REDCap, Power BI and SQL and looking to collaborate on any data-driven projects requiring the use of R, Python and/or SQL languages.
 
 📫 You Can reach out to me on sidelphonse@outlook.com
 
