@@ -23,7 +23,7 @@ df <- read.csv("Salary.csv")
 df_mean <- df %>% 
   filter(age > 18) %>% 
   group_by(country_id) %>%
-  summarise(mean_salary = mean(salary))
+  summarise(mean_salary = mean(salary, na.rm =T))
 print(df_mean)
 
 # Salary by selected country and age group
@@ -35,16 +35,16 @@ df %>%
   summarise(mean_salry = mean(salary, na.rm =T))
 
 # Salary brackets using quantile as break points
-brkpts <- quantile(df$salary)
+brkpts <- quantile(df$salary, na.rm = TRUE)
 df <- df %>% 
   mutate(salary_cl = cut(salary, breaks = brkpts, include.lowest = T)) 
 
 # Mean of salary by salary bracket
 df_cl <- df %>% 
   group_by(salary_cl) %>% 
-  summarise(mean_salary = mean(salary))
+  summarise(mean_salary = mean(salary, na.rm =T)) %>%
+  na.omit(.)
 df_cl
-
 
 
 #----------------------------
@@ -86,37 +86,36 @@ ggplot(data = df, aes(x = country_id)) +
 ggplot(data = df, aes(x = factor(salary))) +
   geom_bar(fill = "cornflowerblue", color = "black") +
   labs(x = "Salary (thousands unit)", 
-       y = "Frequency", 
-       title = "Salary frequency") 
+       y = "Frequency") 
 
 
 ## c) Plot of the raw data points:
 
 # Scatter plot of salary vs age by sex
 ggplot(data = df, aes(x = age, y = salary, color = sex)) +
-  geom_point() +
+  geom_point(na.rm = TRUE) +
   labs(x = "Age", 
        y = "salary (thousands unit)", 
        title = "Slary by age")
 
 # Boxplot of salaries by country
 ggplot(data = df, aes(x = country_id, y = salary)) +
-  geom_boxplot(aes(fill = country_id)) +
+  geom_boxplot(aes(fill = country_id), na.rm = TRUE) +
   labs(x = "Country", y = "Salary (thousands unit)") +
-  stat_summary(fun = mean, geom ="point", size =2, color="red", 
+  stat_summary(fun = mean, geom ="point", size =2, color="red", na.rm = TRUE,
              position = position_dodge(width = .75))
   
 # Boxplot of salaries by country and sex
 ggplot(data = df, aes(x = country_id, y = salary)) +
-  geom_boxplot(aes(fill = country_id)) +
+  geom_boxplot(aes(fill = country_id), na.rm = TRUE) +
   labs(x = "Country", y = "Salary (thousands unit)") +
-  stat_summary(fun = mean, geom ="point", size =2, color="red", 
+  stat_summary(fun = mean, geom ="point", size =2, color="red", na.rm = TRUE, 
                position = position_dodge(width = .75)) +
   facet_wrap(~ sex)
   
 # Violin plot of salaries by country
 ggplot(data = df, aes(x = country_id, y = salary)) +
-  geom_violin(aes(fill = country_id)) +
+  geom_violin(aes(fill = country_id), na.rm = TRUE) +
   labs(x = "Country", y = "Salary (thousands unit)") +
-  stat_summary(fun = median, geom ="point", size = 2, color ="red", 
+  stat_summary(fun = median, geom ="point", size = 2, color ="red", na.rm = TRUE, 
                  position = position_dodge(width = .75))
