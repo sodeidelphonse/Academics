@@ -22,7 +22,7 @@ df <- read.csv("Salary.csv")
 # Mean salary by city for adults
 df_mean <- df %>% 
   filter(age > 18) %>% 
-  group_by(country_id) %>%
+  group_by(city) %>%
   summarise(mean_salary = mean(salary))
 print(df_mean)
 
@@ -34,12 +34,12 @@ df %>%
   group_by(city, adult) %>% 
   summarise(mean_salry = mean(salary, na.rm =T))
 
-# Salary classes using quantile as break points
+# Salary barackets using quantile as break points
 brkpts <- quantile(df$salary)
 df <- df %>% 
   mutate(salary_cl = cut(salary, breaks = brkpts, include.lowest = T)) 
 
-# Mean of salary by salary class
+# Mean of salary by salary bracket
 df_cl <- df %>% 
   group_by(salary_cl) %>% 
   summarise(mean_salary = mean(salary))
@@ -55,7 +55,7 @@ df_cl
 barplot(mean_salary ~ country_id, data = df_mean, 
         xlab = "Country", ylab = "Mean salary (thousands unit)")
 
-# barplot of ean salary by class
+# Barplot of ean salary by class
 barplot(mean_salary ~ salary_cl, data = df_cl, 
         xlab = "Salary category", ylab = "Mean salary (thousands unit)")
 
@@ -74,8 +74,7 @@ ggplot(data = df, aes(x = as.factor(salary))) +
   labs(x = "Salary (thousands unit)", y = "Frequency", 
        title = "Salary histogram") 
 
-
-# Scatter plot of salary vs age by sex
+# Scatter plot of salary Vs age by sex
 ggplot(data = df, aes(x = age, y = salary, color = sex)) +
   geom_point() +
   labs(x = "Age", 
@@ -89,9 +88,7 @@ ggplot(data = df, aes(x = country_id, y = salary)) +
   stat_summary(fun = mean, geom ="point", size =2, color="red", 
              position = position_dodge(width = .75))
   
-  
 # Boxplot of salaries by country and sex
-  
   ggplot(data = df, aes(x = country_id, y = salary)) +
     geom_boxplot(aes(fill = country_id)) +
     labs(x = "Country", y = "Salary (thousands unit)") +
