@@ -34,12 +34,12 @@ df %>%
   group_by(city, adult) %>% 
   summarise(mean_salry = mean(salary, na.rm =T))
 
-# Salary classes using quantile as break points
+# Salary brackets using quantile as break points
 brkpts <- quantile(df$salary)
 df <- df %>% 
   mutate(salary_cl = cut(salary, breaks = brkpts, include.lowest = T)) 
 
-# Mean of salary by salary class
+# Mean of salary by salary bracket
 df_cl <- df %>% 
   group_by(salary_cl) %>% 
   summarise(mean_salary = mean(salary))
@@ -51,29 +51,46 @@ df_cl
 #  Data visualization in R
 #----------------------------
 
-# Barplot of mean salary by country
+
+## a) Plot of quantitative variable
+
+# Generic barplot of mean salary 
 barplot(mean_salary ~ country_id, data = df_mean, 
         xlab = "Country", ylab = "Mean salary (thousands unit)")
 
-# barplot of ean salary by class
-barplot(mean_salary ~ salary_cl, data = df_cl, 
-        xlab = "Salary category", ylab = "Mean salary (thousands unit)")
+# Barplot of mean salary by salary bracket
+ggplot(data = df_cl, aes(x = salary_cl, y = mean_salary)) + 
+  geom_bar(stat = "identity", width = 0.6, fill = "steelblue") +
+  labs(x = "Salary brackets", y = "Mean salary (thousands unit)") +
+  geom_text(aes(label = mean_salary), vjust = 1.6, color = "white") 
+
+# Customize the bar colors and legend position
+ggplot(data = df_cl, aes(x = salary_cl, y = mean_salary, fill = salary_cl)) + 
+  geom_bar(stat = "identity", width = 0.6) +
+  labs(x = "Salary brackets", y = "Mean salary (thousands unit)") +
+  geom_text(aes(label = mean_salary), vjust = 1.6, color = "white") +
+  theme(legend.position = "top") +
+  theme_bw() 
+
+
+## b) Plot of categories frequency
 
 # Frequency of participants by country
 ggplot(data = df, aes(x = country_id)) +
-  geom_bar(fill = "cornflowerblue", 
-         color = "black") +
+  geom_bar(fill = "steelblue", color = "black") +
   labs(x = "Country", 
        y = "Frequency", 
-       title = "Participants by country")
-
+       title = "Participants by country") 
+  
 # Distribution of salary
-ggplot(data = df, aes(x = as.factor(salary))) +
-  geom_bar(fill = "cornflowerblue", 
-           color = "black") +
-  labs(x = "Salary (thousands unit)", y = "Frequency", 
-       title = "Salary histogram") 
+ggplot(data = df, aes(x = factor(salary))) +
+  geom_bar(fill = "cornflowerblue", color = "black") +
+  labs(x = "Salary (thousands unit)", 
+       y = "Frequency", 
+       title = "Salary frequency") 
 
+
+## c) Plot of the raw data points:
 
 # Scatter plot of salary vs age by sex
 ggplot(data = df, aes(x = age, y = salary, color = sex)) +
@@ -89,12 +106,17 @@ ggplot(data = df, aes(x = country_id, y = salary)) +
   stat_summary(fun = mean, geom ="point", size =2, color="red", 
              position = position_dodge(width = .75))
   
-  
 # Boxplot of salaries by country and sex
-  
-  ggplot(data = df, aes(x = country_id, y = salary)) +
-    geom_boxplot(aes(fill = country_id)) +
-    labs(x = "Country", y = "Salary (thousands unit)") +
-    stat_summary(fun = mean, geom ="point", size =2, color="red", 
+ggplot(data = df, aes(x = country_id, y = salary)) +
+  geom_boxplot(aes(fill = country_id)) +
+  labs(x = "Country", y = "Salary (thousands unit)") +
+  stat_summary(fun = mean, geom ="point", size =2, color="red", 
                position = position_dodge(width = .75)) +
-      facet_wrap(~ sex)
+  facet_wrap(~ sex)
+  
+# Violin plot of salaries by country
+ggplot(data = df, aes(x = country_id, y = salary)) +
+  geom_violin(aes(fill = country_id)) +
+  labs(x = "Country", y = "Salary (thousands unit)") +
+  stat_summary(fun = median, geom ="point", size = 2, color ="red", 
+                 position = position_dodge(width = .75))
