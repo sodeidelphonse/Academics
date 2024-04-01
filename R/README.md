@@ -1,3 +1,3 @@
 # Practice in R
 
-This folder contains codes and data for R practice.
+This folder contains all the codes and data for practice with R programming language.
