@@ -34,7 +34,7 @@ df %>%
   group_by(city, adult) %>% 
   summarise(mean_salry = mean(salary, na.rm =T))
 
-# Salary barackets using quantile as break points
+# Salary brackets using quantile values as break points
 brkpts <- quantile(df$salary)
 df <- df %>% 
   mutate(salary_cl = cut(salary, breaks = brkpts, include.lowest = T)) 
@@ -44,7 +44,6 @@ df_cl <- df %>%
   group_by(salary_cl) %>% 
   summarise(mean_salary = mean(salary))
 df_cl
-
 
 
 #----------------------------
