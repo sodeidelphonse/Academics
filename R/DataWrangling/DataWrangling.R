@@ -1,9 +1,10 @@
 
+# Main libraries
 library(dplyr)
+library(ggplot2)
 
-# import the CSV file
-df <- read.csv("R/Salary.csv", header = TRUE)
-
+# Import the CSV file
+df <- read.csv("Salary.csv")
 
 # Data manipulation using SQL-like commands:
 
@@ -20,3 +21,16 @@ df %>%
   filter(country_id %in% c("BEN", "NIG")) %>% 
   group_by(country_id, adult) %>% 
   summarise(mean_salry = mean(salary, na.rm =T))
+
+
+## Data visualization using ggplot2
+
+# Scatter plot
+
+
+# Histogram
+
+
+# Boxplot 
+
+
