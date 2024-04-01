@@ -1,4 +1,11 @@
 
+#------------------------------------------------------------------------------
+#  Data Wrangling with R Software
+#  Author: Akoeugnigan Idelphonse SODE
+#  LinkedIn: https://www.linkedin.com/in/idelphonse-akoeugnigan-sode-05015672/
+#-------------------------------------------------------------------------------
+
+
 # Main libraries
 library(dplyr)
 library(ggplot2)
@@ -6,31 +13,88 @@ library(ggplot2)
 # Import the CSV file
 df <- read.csv("Salary.csv")
 
-# Data manipulation using SQL-like commands:
 
-# Man salary by city for adults
-df %>% 
+#--------------------------------------------
+# Data manipulation using SQL-like commands
+#--------------------------------------------
+
+
+# Mean salary by city for adults
+df_mean <- df %>% 
   filter(age > 18) %>% 
-  group_by(city) %>%
-  summarise(mean_salry = mean(salary))
+  group_by(country_id) %>%
+  summarise(mean_salary = mean(salary))
+print(df_mean)
 
-# Salary by selected country and maturity level
+# Salary by selected country and age group
 df %>%
-  select(country_id, age, city, salary) %>%
+  select(country_id, age, sex, city, salary) %>%
   mutate(adult = age >= 18)  %>% 
-  filter(country_id %in% c("BEN", "NIG")) %>% 
-  group_by(country_id, adult) %>% 
+  filter(city %in% c("Cotonou", "Lagos", "Niamey")) %>% 
+  group_by(city, adult) %>% 
   summarise(mean_salry = mean(salary, na.rm =T))
 
+# Salary classes using quantile as break points
+brkpts <- quantile(df$salary)
+df <- df %>% 
+  mutate(salary_cl = cut(salary, breaks = brkpts, include.lowest = T)) 
 
-## Data visualization using ggplot2
-
-# Scatter plot
-
-
-# Histogram
-
-
-# Boxplot 
+# Mean of salary by salary class
+df_cl <- df %>% 
+  group_by(salary_cl) %>% 
+  summarise(mean_salary = mean(salary))
+df_cl
 
 
+
+#----------------------------
+#  Data visualization in R
+#----------------------------
+
+# Barplot of mean salary by country
+barplot(mean_salary ~ country_id, data = df_mean, 
+        xlab = "Country", ylab = "Mean salary (thousands unit)")
+
+# barplot of ean salary by class
+barplot(mean_salary ~ salary_cl, data = df_cl, 
+        xlab = "Salary category", ylab = "Mean salary (thousands unit)")
+
+# Frequency of participants by country
+ggplot(data = df, aes(x = country_id)) +
+  geom_bar(fill = "cornflowerblue", 
+         color = "black") +
+  labs(x = "Country", 
+       y = "Frequency", 
+       title = "Participants by country")
+
+# Distribution of salary
+ggplot(data = df, aes(x = as.factor(salary))) +
+  geom_bar(fill = "cornflowerblue", 
+           color = "black") +
+  labs(x = "Salary (thousands unit)", y = "Frequency", 
+       title = "Salary histogram") 
+
+
+# Scatter plot of salary vs age by sex
+ggplot(data = df, aes(x = age, y = salary, color = sex)) +
+  geom_point() +
+  labs(x = "Age", 
+       y = "salary (thousands unit)", 
+       title = "Slary by age")
+
+# Boxplot of salaries by country
+ggplot(data = df, aes(x = country_id, y = salary)) +
+  geom_boxplot(aes(fill = country_id)) +
+  labs(x = "Country", y = "Salary (thousands unit)") +
+  stat_summary(fun = mean, geom ="point", size =2, color="red", 
+             position = position_dodge(width = .75))
+  
+  
+# Boxplot of salaries by country and sex
+  
+  ggplot(data = df, aes(x = country_id, y = salary)) +
+    geom_boxplot(aes(fill = country_id)) +
+    labs(x = "Country", y = "Salary (thousands unit)") +
+    stat_summary(fun = mean, geom ="point", size =2, color="red", 
+               position = position_dodge(width = .75)) +
+      facet_wrap(~ sex)
