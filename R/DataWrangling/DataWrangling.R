@@ -21,7 +21,7 @@ df <- read.csv("Salary.csv")
 
 # Mean salary by city for adults
 df_mean <- df %>% 
-  filter(age > 18) %>% 
+  filter(age >= 18) %>% 
   group_by(country_id) %>%
   summarise(mean_salary = mean(salary, na.rm =T))
 print(df_mean)
@@ -39,12 +39,15 @@ brkpts <- quantile(df$salary, na.rm = TRUE)
 df <- df %>% 
   mutate(salary_cl = cut(salary, breaks = brkpts, include.lowest = T)) 
 
-# Mean of salary by salary bracket
+# Mean and SE of salary by salary bracket
 df_cl <- df %>% 
   group_by(salary_cl) %>% 
-  summarise(mean_salary = mean(salary, na.rm =T)) %>%
-  na.omit(.)
-df_cl
+  summarise(mean_salary = round(mean(salary, na.rm=T),2), 
+            std = round(sd(salary, na.rm=T), 2),
+            n = n(),
+            se = round(std/sqrt(n), 2)) %>%  
+  na.omit(.) 
+print(df_cl)
 
 
 #----------------------------
@@ -52,28 +55,31 @@ df_cl
 #----------------------------
 
 
-## a) Plot of quantitative variable
+## a) Plot of a quantitative variable summary
 
 # Generic barplot of mean salary 
 barplot(mean_salary ~ country_id, data = df_mean, 
         xlab = "Country", ylab = "Mean salary (thousands unit)")
 
-# Barplot of mean salary by salary bracket
+# Barplot of salary (mean and SE) by salary bracket
 ggplot(data = df_cl, aes(x = salary_cl, y = mean_salary)) + 
   geom_bar(stat = "identity", width = 0.6, fill = "steelblue") +
   labs(x = "Salary brackets", y = "Mean salary (thousands unit)") +
-  geom_text(aes(label = mean_salary), vjust = 1.6, color = "white") 
+  geom_errorbar(aes(ymin = mean_salary - std, ymax = mean_salary + std), 
+                position = position_dodge(width = .8), width = 0.4) +
+  geom_text(aes(label = mean_salary), vjust = 5, color = "white") 
 
-# Customize the bar colors and legend position
+# Customize the the legend position and the bar color
+# Note that the color customization is only for practice purpose
 ggplot(data = df_cl, aes(x = salary_cl, y = mean_salary, fill = salary_cl)) + 
   geom_bar(stat = "identity", width = 0.6) +
-  labs(x = "Salary brackets", y = "Mean salary (thousands unit)") +
+  labs(x = "Salary brackets", y = "Mean salary (thousands unit)", fill = "") +
   geom_text(aes(label = mean_salary), vjust = 1.6, color = "white") +
   theme(legend.position = "top") +
   theme_bw() 
 
 
-## b) Plot of categories frequency
+## b) Plot of frequencies
 
 # Frequency of participants by country
 ggplot(data = df, aes(x = country_id)) +
@@ -82,14 +88,14 @@ ggplot(data = df, aes(x = country_id)) +
        y = "Frequency", 
        title = "Participants by country") 
   
-# Distribution of salary
-ggplot(data = df, aes(x = factor(salary))) +
+# Frequency of salary by salary bracket
+ggplot(data = df, aes(x = salary_cl)) +
   geom_bar(fill = "cornflowerblue", color = "black") +
-  labs(x = "Salary (thousands unit)", 
+  labs(x = "Salary brackets (thousands unit)", 
        y = "Frequency") 
 
 
-## c) Plot of the raw data points:
+## c) Plot of the raw data points
 
 # Scatter plot of salary vs age by sex
 ggplot(data = df, aes(x = age, y = salary, color = sex)) +
